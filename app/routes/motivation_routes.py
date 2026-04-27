@@ -8,20 +8,20 @@ motivation_bp = Blueprint("motivation", __name__)
 
 @motivation_bp.route("/", methods=["GET"])
 def index():
-    return "API telah berjalan! Dibuat oleh Abdullah Ubaid"
-    
+    # Pesan identitas API diubah
+    return "API Ramalan Zodiak telah berjalan! Dibuat oleh Lamgok Shizan dengan bantuan AI."
 
 @motivation_bp.route("/motivations/generate", methods=["POST"])
 def generate():
     data = request.get_json()
-    theme = data.get("theme")
+    theme = data.get("theme") # Client mengirim nama Zodiak di sini
     total = data.get("total")
 
     if not theme:
-        return jsonify({"error": "Theme is required"}), 400
+        return jsonify({"error": "Nama Zodiak (Theme) harus diisi"}), 400
     
     if not total:
-        return jsonify({"error": "Total is required"}), 400
+        return jsonify({"error": "Total ramalan harus diisi"}), 400
     
     if total <= 0:
         return jsonify({"error": "Total harus besar dari 0"}), 400
@@ -33,14 +33,13 @@ def generate():
         result = create_motivations(theme, total)
 
         return jsonify({
-            "theme": theme,
+            "zodiac": theme,
             "total": len(result),
             "data": result
         })
 
     except Exception as e:
         return jsonify({"error": str(e)}), 500
-
 
 @motivation_bp.route("/motivations", methods=["GET"])
 def get_all():

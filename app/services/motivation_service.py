@@ -8,12 +8,14 @@ def create_motivations(theme: str, total: int):
     session = SessionLocal()
 
     try:
+        # Prompt diubah untuk fokus ke Ramalan Zodiak
         prompt = f"""
-        Dalam format JSON, buat {total} kata-kata motivasi dengan tema "{theme}".
+        Dalam format JSON, buatkan {total} ramalan keberuntungan singkat untuk zodiak "{theme}".
+        Ramalan harus mencakup aspek karir, asmara, atau kesehatan.
         Format:
         {{
             "motivations": [
-                {{"text": "..."}}
+                {{"text": "Ramalan {theme}: ..."}}
             ]
         }}
         """
@@ -21,7 +23,7 @@ def create_motivations(theme: str, total: int):
         result = generate_from_llm(prompt)
         motivations = parse_llm_response(result)
 
-        # save request log
+        # Simpan log permintaan (theme berisi nama zodiak)
         req_log = RequestLog(theme=theme)
         session.add(req_log)
         session.commit()
@@ -49,13 +51,11 @@ def create_motivations(theme: str, total: int):
     finally:
         session.close()
 
-
 def get_all_motivations(page: int = 1, per_page: int = 100):
     session = SessionLocal()
 
     try:
         query = session.query(Motivation)
-
         total = query.count()
 
         data = (
